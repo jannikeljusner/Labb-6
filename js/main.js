@@ -9,33 +9,48 @@ const searchInput = document.querySelector("#search");
 const errorText = document.querySelector("#error");
 const recipeContainer = document.querySelector("#recipe");
 
-// Lyssna på formuläret när någon klickar på sök
+// Lyssna på formuläret vid sökning
 formElement.addEventListener("submit", async function (event) {
   // Stoppa sidan från att laddas om
   event.preventDefault();
 
-  // Hämta texten användaren skrev i sökfältet
+  // Spara ordet som skrivs i sökfältet
   const searchWord = searchInput.value;
 
-  // Validering: Kontrollera om sökfältet är tomt
+  // Kolla om sökfältet är tomt
   if (searchWord === "") {
     errorText.textContent = "Du måste fylla i ett sökord!";
   } else {
-    // Töm eventuella gamla felmeddelanden
+    // Ta bort gamla felmeddelanden
     errorText.textContent = "";
 
-    // 1. Skicka förfrågan till webbtjänsten med användarens sökord
+    // Hämta data från API med sökord
     const response = await fetch(
       "https://dummyjson.com/recipes/search?q=" + searchWord,
     );
 
-    // 2. Tolka svaret från JSON till ett JavaScript-objekt
+    // Gör om svaret till ett objekt
     const data = await response.json();
 
-    // 3. Plocka ut det allra första receptet (nummer 0) från listan
+    // Plocka ut det första receptet ur listan
     const firstRecipe = data.recipes[0];
 
-    // 4. Bygg HTML-koden och skicka ut den 
+    // Skriv ut i konsolen för att dubbelkolla datan
+    console.log(firstRecipe);
+
+    // Skapa en tom låda och loopa fram ingredienserna
+    let ingredientsHTML = "";
+    for (const ingredient of firstRecipe.ingredients) {
+      ingredientsHTML += `<li>${ingredient}</li>`;
+    }
+
+    // Skapa en tom låda och loopa fram instruktionerna
+    let instructionsHTML = "";
+    for (const instruction of firstRecipe.instructions) {
+      instructionsHTML += `<li>${instruction}</li>`;
+    }
+
+    // Bygg ihop all HTML och skicka ut på sidan
     recipeContainer.innerHTML = `
       <article>
           <h3>${firstRecipe.name}</h3>
@@ -47,6 +62,17 @@ formElement.addEventListener("submit", async function (event) {
               <p><strong>Cooking time:</strong> ${firstRecipe.cookTimeMinutes} minutes</p>
               <p><strong>Difficulty:</strong> ${firstRecipe.difficulty}</p>
           </div>
+
+          <h4>Ingredients</h4>
+          <ul>
+              ${ingredientsHTML}
+          </ul>
+
+          <h4>Instructions</h4>
+          <ol>
+              ${instructionsHTML}
+          </ol>
       </article>
     `;
+  }
 });
