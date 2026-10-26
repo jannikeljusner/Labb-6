@@ -34,6 +34,13 @@ formElement.addEventListener("submit", async function (event) {
         "https://dummyjson.com/recipes/search?q=" + searchWord,
       );
 
+      // Kolla om HTTP-svaret var OK. Annars avbryt och kasta ett fel ner till catch.
+      if (!response.ok) {
+        throw new Error(
+          "Något gick fel med servern, status: " + response.status,
+        );
+      }
+
       // Gör om svaret till ett objekt
       const data = await response.json();
 
