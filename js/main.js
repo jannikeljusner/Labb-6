@@ -15,12 +15,14 @@ formElement.addEventListener("submit", async function (event) {
   // Stoppa sidan från att laddas om
   event.preventDefault();
 
-  // Spara ordet jag skrev i sökfältet
-  const searchWord = searchInput.value;
+  // Spara ordet jag skrev i sökfältet (och ta bort osynliga mellanslag)
+  const searchWord = searchInput.value.trim();
 
   // Kolla om sökfältet är tomt
   if (searchWord === "") {
     errorText.textContent = "Du måste fylla i ett sökord!";
+    recipeContainer.innerHTML = "";
+    messageSection.innerHTML = "";
   } else {
     // Ta bort gamla felmeddelanden från skärmen
     errorText.textContent = "";
